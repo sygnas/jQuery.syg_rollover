@@ -14,6 +14,8 @@ version 1.6.2
 
 ##SYNOPSIS
 
+[DEMO](http://sygnas.jp/dl/javascript/jquery.syg_rollover/demo/example.html)
+
 ###Simple Setup
 ``` html
 <img src="swap_01.png" class="swap" /> <!-- need "swap_01-over.png" -->
