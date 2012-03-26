@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ja" xml:lang="ja" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+	<script language="JavaScript" type="text/javascript" src="lib/jquery-1.4.2.min.js"></script>
+	<script language="JavaScript" type="text/javascript" src="jquery.syg_rollover.1.0.js"></script>
+	
+	<style type="text/css">
+	<!--
+	ul{
+		padding:		0;
+	}
+	li{
+		position:		relative;
+		float:			left;
+		overflow:		hidden;
+		list-style-type:	none;
+	}
+	li img{
+		position:		absolute;
+	}
+	-->
+	</style>
+	
+</head>
+<!-- //////////////////////// -->
+<body>
+
+<h1>jQuery RollOver DEMO</h1>
+
+<h2>simple swap</h2>
+
+<div>
+	<img src="img/swap_01.png" width="78" height="55" class="swap" />
+	<img src="img/swap_02.png" width="78" height="55" class="swap" />
+
+	<script>
+		new $.SygRollover( '.swap', {mode:'swap'} );
+	</script>
+</div>
+
+
+<!-- //////////////////////// -->
+<h2>simple swap radio group</h2>
+
+<div>
+	<img src="img/swap_01.png" width="78" height="55" class="swap2" />
+	<img src="img/swap_02.png" width="78" height="55" class="swap2 active" />
+
+	<script>
+		new $.SygRollover( '.swap2', {mode:'swap', radio:true} );
+	</script>
+</div>
+
+
+<!-- //////////////////////// -->
+<h2>select from script</h2>
+
+<div>
+	<img src="img/swap_01.png" width="78" height="55" class="fromScript" />
+	<img src="img/swap_02.png" width="78" height="55" class="fromScript" />
+	<img src="img/swap_01.png" width="78" height="55" class="fromScript" />
+	<img src="img/swap_02.png" width="78" height="55" class="fromScript" />
+	<br />
+	<br />
+
+	<script>
+		var group = new $.SygRollover( '.fromScript', {mode:'swap', radio:true} );
+	</script>
+
+	<a href="#" onclick="group.select(0); return false;">0</a> /
+	<a href="#" onclick="group.select(1); return false;">1</a> /
+	<a href="#" onclick="group.select(2); return false;">2</a> /
+	<a href="#" onclick="group.select(3); return false;">3</a>
+	<strong>&lt;&lt;click</strong>
+
+</div>
+
+
+<!-- //////////////////////// -->
+<h2>fade</h2>
+
+<div>
+	<img src="img/fade_01.gif" width="136" height="32" class="fade" />
+	<img src="img/fade_02.gif" width="136" height="32" class="fade" />
+
+	<script>
+		new $.SygRollover( '.fade', {mode:'fade'} );
+	</script>
+</div>
+
+
+<!-- //////////////////////// -->
+<h2>scroll vertical</h2>
+
+<div id="demo-scroll-vertical">
+	<ul>
+		<li><img src="img/scroll_01.png" width="120" height="80" class="scroll" /></li>
+		<li><img src="img/scroll_02.png" width="120" height="80" class="scroll" /></li>
+	</ul>
+
+	<script>
+		new $.SygRollover( '.scroll', {mode:'scroll', scrollTime:200, scrollOut:[0,0], scrollOver:[0,-40]} );
+	</script>
+	
+	<style type="text/css">
+	<!--
+	#demo-scroll-vertical{
+		height:			40px;
+	}
+	#demo-scroll-vertical li{
+		width:			120px;
+		height:			40px;
+	}
+	-->
+	</style>
+</div>
+
+
+<!-- //////////////////////// -->
+<h2>scroll horizontal radio</h2>
+
+<div id="demo-scroll-horizontal">
+	<ul>
+		<li><img src="img/scroll2_01.png" width="250" height="40" class="scroll2 active" /></li>
+		<li><img src="img/scroll2_02.png" width="250" height="40" class="scroll2" /></li>
+		<li><img src="img/scroll2_01.png" width="250" height="40" class="scroll2" /></li>
+		<li><img src="img/scroll2_02.png" width="250" height="40" class="scroll2" /></li>
+	</ul>
+
+	<script>
+		new $.SygRollover( '.scroll2', {mode:'scroll', scrollTime:400, scrollOut:[0,0], scrollOver:[-150,0], radio:true} );
+	</script>
+	
+	<style type="text/css">
+	<!--
+	#demo-scroll-horizontal{
+		height:			40px;
+	}
+	#demo-scroll-horizontal li{
+		width:			100px;
+		height:			40px;
+	}
+	-->
+	</style>
+</div>
+
+
+<!-- //////////////////////// -->
+<h2>background scroll</h2>
+
+<div id="demo-bg-scroll">
+	<ul>
+		<li>
+			<img src="img/scroll_bg.gif" width="100" height="110" class="bg">
+			<img src="img/scrollbg_01.png" width="96" height="55" class="bgscroll" />
+		</li>
+		<li>
+			<img src="img/scroll_bg.gif" width="100" height="110" class="bg">
+			<img src="img/scrollbg_02.png" width="96" height="55" class="bgscroll" />
+		</li>
+	</ul>
+
+	<script>
+		new $.SygRollover( '.bgscroll', {
+			mode:'scroll',
+			scrollTime:200, 
+			scrollOut:[0,0], 
+			scrollOver:[0,-55], 
+			scrollTarget:function( target ){
+				// target is DOM Element
+				// select scroll target jQuery.parent() .next() .sibilings(). etc...
+				return $(target).prev();
+				
+			}
+		});
+	</script>
+	
+	<style type="text/css">
+	<!--
+	#demo-bg-scroll img{
+		position:	relative;
+	}
+	#demo-bg-scroll .bg{
+		position:	absolute;
+		top:		0;
+		left:		0;
+	}
+	#demo-bg-scroll li{
+		background:	url("img/scroll_bg.gif") left top repeat-x;
+		height:		55px;
+	}
+	-->
+	</style>
+</div>
+
+
+<br><br><br><br>
+</body>
+</html>
+
