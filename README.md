@@ -51,10 +51,13 @@ version 1.6.2
 		height: 40px;
 		overfllow: hidden;
 	}
+	.scroll{
+		position: absolute;
+	}
 </style>
 
 <script>
-	new $.SygRollover( '.scroll', { mode:'scroll', scrollOver:[0,-20], scrollOut:[0,0] } );
+	new $.SygRollover( '.scroll', { mode:'scroll', scrollOver:[0,-40], scrollOut:[0,0] } );
 </script>
 ```
 
@@ -127,7 +130,7 @@ scrollTarget    {"self"} or function
                 function( target ){
                     return $(target).prev();
                 }
-
+```
 
 ##METHOD
 
@@ -158,7 +161,6 @@ n番目のボタンをロールアウト状態にする。
 ``` html
 var buttons = new $.SygRollover( '.button' );
 buttons.rollout(0);
-
 ```
 
 
