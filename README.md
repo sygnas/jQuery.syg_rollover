@@ -4,11 +4,13 @@
 jQuery.syg_rollover
 
 ##VERSION
-version 1.0
+version 1.1
 
 jQuery VERSION  
 version 1.6.2
 
+2012.04.03 ver 1.1
+	hover()、click()のイベント受け取りを e.target から e.crrentTarget に変更。
 2012.03.26 ver 1.0
 	とりあえず公開。
 
