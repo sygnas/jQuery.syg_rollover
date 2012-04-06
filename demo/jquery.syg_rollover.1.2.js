@@ -1,7 +1,7 @@
 /*****************************************
 
 jQuery.syg_rollover
-version 1.0
+version 1.2
 Hiroshi Fukuda <dada@sygnas.jp>
 http://sygnas.jp/
 
@@ -57,7 +57,7 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 	scrollTime		200
 	scrollOver		[x,y]
 	scrollOut		[x,y]
-	scrollTarget	"self" or function
+	effectTarget	"self" or function
 
 					function( target ){
 						return $(target).prev();
@@ -76,15 +76,16 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		
 		// default parameters
 		var defaults = {
-			mode:			"swap",
+			mode:			'swap',
 			radio:			false,
+			effectTarget:	'self',
 			
 			// scroll mode options
 			scrollEasing:	'swing',
 			scrollTime:		200,
 			scrollOut:		[0,0],
 			scrollOver:		[0,-10],
-			scrollTarget:	'self',
+			// effectTarget:	'self',		Å© effectTarget Ç…ìùçá
 			
 			// swap mode options
 			swapExt:		"-over",
@@ -111,17 +112,27 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		var count = 0;
 		
 		jQuery( target ).each( function(){
+			
+			var effectTarget;
 
+			// set scroll target
+			if( opt.effectTarget == 'self' ){
+				effectTarget = this;
+			}else if( typeof opt.effectTarget == 'function' ){
+				effectTarget = opt.effectTarget( this );
+			}
+			
+			// select mode
 			switch( opt.mode ){
 				
 				case "swap":
-					buttons.push( new jQuery.SygRolloverSwap( this, opt ) );
+					buttons.push( new jQuery.SygRolloverSwap( this, effectTarget, opt ) );
 					break;
 				case "scroll":
-					buttons.push( new jQuery.SygRolloverScroll( this, opt ) );
+					buttons.push( new jQuery.SygRolloverScroll( this, effectTarget, opt ) );
 					break;
 				case "fade":
-					buttons.push( new jQuery.SygRolloverFade( this, opt ) );
+					buttons.push( new jQuery.SygRolloverFade( this, effectTarget, opt ) );
 					break;
 			}
 
@@ -130,6 +141,8 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 			if( jQuery(this).is('.active') ){
 				self.rollover( count, true );
 				self.active = buttons[count];
+			}else{
+				self.rollout( count, true );
 			}
 			
 			count ++;
@@ -142,13 +155,13 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		jQuery( target ).hover(
 			jQuery.proxy(
 				function( e ){
-					self.rollover( e.target.sygRolloverID ) ;
+					self.rollover( e.currentTarget.sygRolloverID ) ;
 				},
 				self
 			),
 			jQuery.proxy(
 				function( e ){
-					self.rollout( e.target.sygRolloverID ) ;
+					self.rollout( e.currentTarget.sygRolloverID ) ;
 				},
 				self
 			)
@@ -158,7 +171,7 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		* click setting
 		*/
 		jQuery( target ).click( function( e ){
-			self.select( e.target.sygRolloverID );
+			self.select( e.currentTarget.sygRolloverID );
 		});
 		
 	};
@@ -212,10 +225,11 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 	/**************
 	* constructor
 	*/
-	jQuery.SygRolloverSwap = function( target, opt ){
+	jQuery.SygRolloverSwap = function( target, effectTarget, opt ){
 		this.target = target;
+		this.effectTarget = effectTarget;
 		
-		this.imgsrc = target.src;
+		this.imgsrc = effectTarget.src;
 		var dotpos = this.imgsrc.lastIndexOf('.');
 		this.imgsrc_over = this.imgsrc.substr(0,dotpos) + opt.swapExt + this.imgsrc.substr(dotpos);
 
@@ -236,14 +250,14 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 	* rollover
 	*/
 	jQuery.SygRolloverSwap.prototype.rollover = function(){
-		this.target.src = this.imgsrc_over;
+		this.effectTarget.src = this.imgsrc_over;
 	}
 	
 	/**************
 	* rollout
 	*/
 	jQuery.SygRolloverSwap.prototype.rollout = function(){
-		this.target.src = this.imgsrc;
+		this.effectTarget.src = this.imgsrc;
 	}
 
 	/////////////////////////////////////////////////
@@ -253,16 +267,10 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 	/**************
 	* constructor
 	*/
-	jQuery.SygRolloverScroll = function( target, opt ){
+	jQuery.SygRolloverScroll = function( target, effectTarget, opt ){
 		this.target = target;
+		this.effectTarget = effectTarget;
 		this.opt = opt;
-		
-		// set scroll target
-		if( opt.scrollTarget == 'self' ){
-			this.scrollTarget = target;
-		}else if( typeof opt.scrollTarget == 'function' ){
-			this.scrollTarget = opt.scrollTarget( target );
-		}
 	}
 	
 	/**************
@@ -280,7 +288,7 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		var x = opt.scrollOver[0];
 		var y = opt.scrollOver[1];
 		
-		jQuery(this.scrollTarget).stop(true,false)
+		jQuery(this.effectTarget).stop(true,false)
 		.animate( {left:x, top:y}, opt.scrollTime, opt.scrollEasing );
 	}
 	
@@ -292,7 +300,7 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		var x = opt.scrollOut[0];
 		var y = opt.scrollOut[1];
 		
-		jQuery(this.scrollTarget).stop(true,false)
+		jQuery(this.effectTarget).stop(true,false)
 		.animate( {left:x, top:y}, opt.scrollTime, opt.scrollEasing );
 	}
 	
@@ -304,8 +312,9 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 	/**************
 	* constructor
 	*/
-	jQuery.SygRolloverFade = function( target, opt ){
+	jQuery.SygRolloverFade = function( target, effectTarget, opt ){
 		this.target = target;
+		this.effectTarget = effectTarget;
 		this.opt = opt;
 	}
 	
@@ -322,7 +331,7 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 	jQuery.SygRolloverFade.prototype.rollover = function(){
 		var opt = this.opt;
 		
-		jQuery(this.target).stop(true,false)
+		jQuery(this.effectTarget).stop(true,false)
 			.animate( {opacity:opt.fadeOverOpacity}, opt.fadeOverTime, 'swing' );
 	}
 	
@@ -334,7 +343,7 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		var x = opt.scrollOut[0];
 		var y = opt.scrollOut[1];
 		
-		jQuery(this.target).stop(true,false)
+		jQuery(this.effectTarget).stop(true,false)
 			.animate( {opacity:opt.fadeOutOpacity}, opt.fadeOutTime, 'swing' );
 	}
 	

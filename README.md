@@ -4,15 +4,23 @@
 jQuery.syg_rollover
 
 ##VERSION
-version 1.1
+version 1.2
 
 jQuery VERSION  
 version 1.6.2
 
+2012.04.03 ver 1.2
+
+* スクロール対象の選択パラメータ名を「scrollTarget」から「effectTarget」に変更。
+* swap、fadeモードでもエフェクト対象を「effectTarget」で選択できるようにした。
+
 2012.04.03 ver 1.1
-	hover()、click()のイベント受け取りを e.target から e.crrentTarget に変更。
+
+* hover()、click()のイベント受け取りを e.target から e.crrentTarget に変更。
+
 2012.03.26 ver 1.0
-	とりあえず公開。
+
+* とりあえず公開。
 
 ##SYNOPSIS
 
