@@ -1,30 +1,20 @@
-#jQuery.syg_rollover - swap and scroll and fade effects rollover
+#jQuery SygRollover - swap and scroll and fade effects rollover
 
 ##NAME
-jQuery.syg_rollover
+jQuery SygRollover
 
 ##VERSION
-version 1.2
+2012.04.07 ver 1.3
+
+* ロールオーバーだけではなく、選択時の状態も使えるように変更。ファイル名には「-select」を付ける（swapSelectで変更可）。
 
 jQuery VERSION  
 version 1.6.2
 
-2012.04.03 ver 1.2
-
-* スクロール対象の選択パラメータ名を「scrollTarget」から「effectTarget」に変更。
-* swap、fadeモードでもエフェクト対象を「effectTarget」で選択できるようにした。
-
-2012.04.03 ver 1.1
-
-* hover()、click()のイベント受け取りを e.target から e.crrentTarget に変更。
-
-2012.03.26 ver 1.0
-
-* とりあえず公開。
 
 ##SYNOPSIS
 
-[DEMO](http://sygnas.jp/dl/javascript/jquery.syg_rollover/demo/example.html)
+[DEMO jQuery SygRollover](http://sygnas.jp/sygrollover/)
 
 ###Simple Setup
 ``` html
@@ -45,34 +35,6 @@ version 1.6.2
 </script>
 ```
 
-###Fade mode
-``` html
-<img src="fade_01.png" class="fade" />
-
-<script>
-	new $.SygRollover( '.fade', { mode:'fade' } );
-</script>
-```
-
-###Scroll mode
-``` html
-<div id="box"><img src="scroll_01.png" class="scroll" width="50" height="80" /></div>
-
-<style type="text/css">
-	#box{
-		height: 40px;
-		overfllow: hidden;
-	}
-	.scroll{
-		position: absolute;
-	}
-</style>
-
-<script>
-	new $.SygRollover( '.scroll', { mode:'scroll', scrollOver:[0,-40], scrollOut:[0,0] } );
-</script>
-```
-
 ##DESCRIPTION
 ロールオーバー効果として画像入れ替え、透明度変更、スクロールが使える jQueryプラグインです。
 オプションでグループ設定をしたり、外部からグループの選択状態を変更できます。
@@ -81,7 +43,7 @@ swap（入れ替え）モードの場合、表示画像と共に、ファイル�
 例：button.jpg　と　button-over.jpg
 
 scrollモードを使うときは cssで positionや overflowを指定する必要があります。
-example.html を参照。
+[DEMO jQuery SygRollover](http://sygnas.jp/sygrollover/)
 
 ##PARAMETERS
 
@@ -94,13 +56,32 @@ mode            {"swap"} / "scroll" / "fade"
 radio           {false} / true
                 ラジオグループにする。
                 class="active" になっているものは最初から選択状態になる。
+
+select			{false} / true
+				radio:true 指定時、選択時の画像を指定できる。
+				false の場合は ロールオーバー状態が選択状態として使われる。
+
+effectTarget    {"self"} or function
+                エフェクト対象を指定する。
+                マウスオーバーしたエレメント自身に効果を加えるなら無指定。
+                背景など別の画像をscroll/swap/fadeさせたいなら、
+                function設定してエレメントを返す。
+
+                例：
+                function( target ){
+                    return $(target).prev();
+                }
 ```
 
 ### swapモード用
 ``` html
 swapExt         {"-over"}
-                swapモードで使う入れ替え画像の追加ファイル名。
+                swapモードで使う入れ替え画像ファイル名の修飾子。
                 例：「-over」の場合 "file.jpg" と "file-over.jpg"
+
+swapSelect		{"-select"}
+                ラジオグループで使う入れ替え画像ファイル名の修飾子。
+                例：「-select」の場合 "file.jpg" と "file-select.jpg"
 ```
 
 ### fadeモード用
@@ -116,6 +97,10 @@ fadeOverOpacity {0.5}
 
 fadeOutOpacity  {1}
 				ロールアウト時の透明度
+
+fadeSelect		{"-select"}
+                ラジオグループで使う入れ替え画像ファイル名の修飾子。
+                例：「-select」の場合 "file.jpg" と "file-select.jpg"
 ```
 
 ### scrollモード用
@@ -133,15 +118,8 @@ scrollOver      [x,y]
 scrollOut       [x,y]
 				ロールアウト時のスクロール座標。
 
-scrollTarget    {"self"} or function
-				スクロール対象を指定する。
-				マウスオーバーしたエレメント自身をスクロールさせるなら「self」のまま。
-				背景をスクロールしたように見せたいなら、function設定してエレメントを返す。
-
-				例：
-                function( target ){
-                    return $(target).prev();
-                }
+scrollSelect    [x,y]
+				選択時のスクロール座標。
 ```
 
 ##METHOD
@@ -175,6 +153,28 @@ var buttons = new $.SygRollover( '.button' );
 buttons.rollout(0);
 ```
 
+##OLD VERSION
+
+2012.04.07 ver 1.3
+
+* ロールオーバーだけではなく、選択時の状態も使えるように変更。ファイル名には「-select」を付ける（swapSelectで変更可）。
+
+2012.04.03 ver 1.2
+
+* スクロール対象の選択パラメータ名を「scrollTarget」から「effectTarget」に変更。
+
+2012.04.03 ver 1.2
+
+* スクロール対象の選択パラメータ名を「scrollTarget」から「effectTarget」に変更。
+* swap、fadeモードでもエフェクト対象を「effectTarget」で選択できるようにした。
+
+2012.04.03 ver 1.1
+
+* hover()、click()のイベント受け取りを e.target から e.crrentTarget に変更。
+
+2012.03.26 ver 1.0
+
+* とりあえず公開。
 
 ##AUTHOR
 Hiroshi Fukuda <dada@sygnas.jp>  

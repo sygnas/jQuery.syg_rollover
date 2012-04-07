@@ -78,6 +78,7 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		var defaults = {
 			mode:			'swap',
 			radio:			false,
+			select:			false,
 			effectTarget:	'self',
 			
 			// scroll mode options
@@ -85,16 +86,19 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 			scrollTime:		200,
 			scrollOut:		[0,0],
 			scrollOver:		[0,-10],
+			scrollSelect:	[0,-20],
 			// effectTarget:	'self',		Å© effectTarget Ç…ìùçá
 			
 			// swap mode options
-			swapExt:		"-over",
+			swapExt:		'-over',
+			swapSelect:		'-select',
 			
 			// fade mode options
 			fadeOverTime:	200,
 			fadeOutTime:	1000,
 			fadeOverOpacity:0.5,
-			fadeOutOpacity:	1
+			fadeOutOpacity:	1,
+			fadeSelect:		'-select'
 		};
 		/******/
 
@@ -139,8 +143,13 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 			this.sygRolloverID = count;
 			
 			if( jQuery(this).is('.active') ){
-				self.rollover( count, true );
-				self.active = buttons[count];
+				
+				if( opt.select ){
+					self.select( count );
+				}else{
+					self.rollover( count, true );
+					self.active = buttons[count];
+				}
 			}else{
 				self.rollout( count, true );
 			}
@@ -193,7 +202,12 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		// set active
 		jQuery( this.buttons[id].target ).addClass('active');
 		this.active = this.buttons[ id ];
-		this.rollover( id, true );
+		
+		if( opt.select ){
+			this.buttons[id].select();
+		}else{
+			this.rollover( id, true );
+		}
 	}
 	
 	/*****************************
@@ -218,6 +232,14 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		this.buttons[id].rollout();
 	}
 	
+	/*****************************
+	* set rollout
+	*/
+	var makeFilename = function( filename, ext ){
+		var dotpos = filename.lastIndexOf('.');
+		return filename.substr(0,dotpos) + ext + filename.substr(dotpos);
+	}
+	
 	/////////////////////////////////////////////////
 	// swap class
 	/////////////////////////////////////////////////
@@ -230,13 +252,18 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		this.effectTarget = effectTarget;
 		
 		this.imgsrc = effectTarget.src;
-		var dotpos = this.imgsrc.lastIndexOf('.');
-		this.imgsrc_over = this.imgsrc.substr(0,dotpos) + opt.swapExt + this.imgsrc.substr(dotpos);
+		this.imgsrc_over = makeFilename( this.imgsrc, opt.swapExt );
 
 		// cache rollover image
-		var tmpImg = new Image();
-		tmpImg.src = this.imgsrc_over;
+		var hoverImg = new Image();
+		hoverImg.src = this.imgsrc_over;
 		
+		// select image
+		if( opt.select ){
+			this.imgsrc_select = makeFilename( this.imgsrc, opt.swapSelect );
+			var selectImg = new Image();
+			selectImg.src = this.imgsrc_select;
+		}
 	}
 	
 	/**************
@@ -260,6 +287,13 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		this.effectTarget.src = this.imgsrc;
 	}
 
+	/**************
+	* select
+	*/
+	jQuery.SygRolloverSwap.prototype.select = function(){
+		this.effectTarget.src = this.imgsrc_select;
+	}
+	
 	/////////////////////////////////////////////////
 	// scroll class
 	/////////////////////////////////////////////////
@@ -304,6 +338,18 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		.animate( {left:x, top:y}, opt.scrollTime, opt.scrollEasing );
 	}
 	
+	/**************
+	* select
+	*/
+	jQuery.SygRolloverScroll.prototype.select = function(){
+		var opt = this.opt;
+		var x = opt.scrollSelect[0];
+		var y = opt.scrollSelect[1];
+		
+		jQuery(this.effectTarget).stop(true,false)
+		.animate( {left:x, top:y}, 0 );
+	}
+	
 
 	/////////////////////////////////////////////////
 	// fade class
@@ -316,6 +362,10 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		this.target = target;
 		this.effectTarget = effectTarget;
 		this.opt = opt;
+		
+		
+		this.imgsrc = effectTarget.src;
+		this.imgsrc_select = makeFilename( this.imgsrc, opt.fadeSelect );
 	}
 	
 	/**************
@@ -331,6 +381,8 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 	jQuery.SygRolloverFade.prototype.rollover = function(){
 		var opt = this.opt;
 		
+		this.effectTarget.src = this.imgsrc;
+		
 		jQuery(this.effectTarget).stop(true,false)
 			.animate( {opacity:opt.fadeOverOpacity}, opt.fadeOverTime, 'swing' );
 	}
@@ -343,10 +395,19 @@ Copyright (c) 2011-2012 Hiroshi Fukuda, http://sygnas.jp/
 		var x = opt.scrollOut[0];
 		var y = opt.scrollOut[1];
 		
+		this.effectTarget.src = this.imgsrc;
+		
 		jQuery(this.effectTarget).stop(true,false)
 			.animate( {opacity:opt.fadeOutOpacity}, opt.fadeOutTime, 'swing' );
 	}
 	
+	/**************
+	* select
+	*/
+	jQuery.SygRolloverFade.prototype.select = function(){
+		this.effectTarget.src = this.imgsrc_select;
+		jQuery( this.effectTarget ).stop(true,false).css('opacity',1);
+	}
 
 	
 })( jQuery );
